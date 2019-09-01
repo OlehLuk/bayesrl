@@ -1,5 +1,6 @@
-from thompsonsampagent import ThompsonSampAgent
+from bayesrl.agents import ThompsonSampAgent
 import numpy as np
+
 
 class ThompsonSampAgentPOMDP(ThompsonSampAgent):
     def __init__(self, observation_model, dirichlet_param, reward_param, **kwargs):
@@ -32,7 +33,7 @@ class ThompsonSampAgentPOMDP(ThompsonSampAgent):
         for last_state,next_state in [(s,s_) for s in range(self.num_states) for s_ in range(self.num_states)]:
             tp = self.belief[last_state]*self.transition_probs[last_state,self.last_action,next_state]
             # Update the reward associated with (s,a,s') if first time.
-            #if self.reward[last_state, self.last_action, next_state] == self.reward_param:
+            # if self.reward[last_state, self.last_action, next_state] == self.reward_param:
             self.reward[last_state, self.last_action, next_state] *= (1-tp)
             self.reward[last_state, self.last_action, next_state] += reward*tp
 
@@ -57,21 +58,21 @@ class ThompsonSampAgentPOMDP(ThompsonSampAgent):
         """Compute an optimal T-step policy for the current state."""
         self.policy_step = 0
         self.transition_probs = np.zeros((self.num_states, self.num_actions, self.num_states))
-        for s in xrange(self.num_states):
-            for a in xrange(self.num_actions):
+        for s in range(self.num_states):
+            for a in range(self.num_actions):
                 self.transition_probs[s,a] = np.random.dirichlet(self.transition_observations[s,a] +\
                                                             self.dirichlet_param, size=1)
         self._value_iteration(self.transition_probs)
 
-    def __update_belief(self,action,observation):
+    def __update_belief(self, action, observation):
         self.__transition(action)
         self.__observe(observation)
 
-    def __transition(self,action):
+    def __transition(self, action):
         for s in range(self.num_states):
             self.belief[s] = sum(self.transition_probs[s_,action,s]*self.belief[s_] for s_ in range(self.num_states))
 
-    def __observe(self,observation):
+    def __observe(self, observation):
         self.belief = [self.belief[s]*self.observation_model[s][observation] for s in range(self.num_states)]
         Z = sum(self.belief)
         self.belief = np.array(self.belief)/float(Z)

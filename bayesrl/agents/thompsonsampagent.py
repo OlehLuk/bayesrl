@@ -1,5 +1,6 @@
-from modelbasedagent import ModelBasedAgent
+from bayesrl.agents import ModelBasedAgent
 import numpy as np
+
 
 class ThompsonSampAgent(ModelBasedAgent):
     def __init__(self, dirichlet_param, reward_param, **kwargs):
@@ -51,8 +52,8 @@ class ThompsonSampAgent(ModelBasedAgent):
         """Compute an optimal T-step policy for the current state."""
         self.policy_step = 0
         transition_probs = np.zeros((self.num_states, self.num_actions, self.num_states))
-        for s in xrange(self.num_states):
-            for a in xrange(self.num_actions):
+        for s in range(self.num_states):
+            for a in range(self.num_actions):
                 transition_probs[s,a] = np.random.dirichlet(self.transition_observations[s,a] +\
                                                             self.dirichlet_param, size=1)
         self._value_iteration(transition_probs)

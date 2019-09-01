@@ -1,5 +1,6 @@
-from agent import Agent
+from bayesrl.agents import Agent
 import numpy as np
+
 
 class ModelBasedAgent(Agent):
     """Runs R-MAX only for an MDP, i.e., not a stochastic game, in order to simplify data structures."""
@@ -29,7 +30,7 @@ class ModelBasedAgent(Agent):
         k = 0
         while True:
             diff = 0
-            for s in xrange(value_dim):
+            for s in range(value_dim):
                 old = value[s]
                 value[s] = np.max(np.sum(transition_probs[s]*(self.reward[s] +
                            self.discount_factor*np.array([value,]*self.num_actions)),
@@ -40,7 +41,7 @@ class ModelBasedAgent(Agent):
                 break
             if k > 1e6:
                 raise Exception("Value iteration not converging. Stopped at 1e6 iterations.")
-        for s in xrange(value_dim):
+        for s in range(value_dim):
             self.value_table[s] = np.sum(transition_probs[s]*(self.reward[s] +
                    self.discount_factor*np.array([value,]*self.num_actions)),
                    axis=1)

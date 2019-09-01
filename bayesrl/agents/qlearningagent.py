@@ -1,5 +1,6 @@
-from agent import Agent
+from bayesrl.agents import Agent
 import numpy as np
+
 
 class QLearningAgent(Agent):
     def __init__(self, learning_rate, epsilon, value=0, **kwargs):

@@ -1,5 +1,6 @@
-from modelbasedagent import ModelBasedAgent
+from bayesrl.agents import ModelBasedAgent
 import numpy as np
+
 
 class RMAXAgent(ModelBasedAgent):
     """Runs R-MAX only for an MDP, i.e., not a stochastic game, in order to simplify data structures."""

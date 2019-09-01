@@ -1,5 +1,6 @@
-from agent import Agent
+from bayesrl.agents import Agent
 import numpy as np
+
 
 class SARSAAgent(Agent):
     def __init__(self, learning_rate, epsilon, value=0, **kwargs):

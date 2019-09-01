@@ -1,5 +1,3 @@
-import numpy as np
-
 class Agent(object):
     """
     Base class for all reinforcement learning agents to inherit from.
