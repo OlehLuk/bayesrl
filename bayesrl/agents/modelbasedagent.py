@@ -8,13 +8,16 @@ class ModelBasedAgent(Agent):
         super(ModelBasedAgent, self).__init__(**kwargs)
         self.T = T
 
-        self.policy_step = self.T # To keep track of where in T-step policy the agent is in; initialized to recompute policy
+        # To keep track of where in T-step policy the agent is in; initialized to recompute policy
+        self.policy_step = self.T
         self.transition_observations = np.zeros((self.num_states, self.num_actions, self.num_states))
         self.value_table = np.zeros((self.num_states, self.num_actions))
 
     def reset(self):
         super(ModelBasedAgent, self).reset()
-        self.policy_step = self.T # To keep track of where in T-step policy the agent is in; initialized to recompute policy
+
+        # To keep track of where in T-step policy the agent is in; initialized to recompute policy
+        self.policy_step = self.T
         self.transition_observations.fill(0)
         self.value_table.fill(0)
 
@@ -33,18 +36,18 @@ class ModelBasedAgent(Agent):
             for s in range(value_dim):
                 old = value[s]
                 value[s] = np.max(np.sum(transition_probs[s]*(self.reward[s] +
-                           self.discount_factor*np.array([value,]*self.num_actions)),
-                           axis=1))
+                                  self.discount_factor*np.array([value, ]*self.num_actions)),
+                                  axis=1))
                 diff = max(0, abs(old - value[s]))
             k += 1
-            if diff < 1e-2:
+            if diff < 1e-1:
                 break
-            if k > 1e6:
+            if k > 1e4:
                 raise Exception("Value iteration not converging. Stopped at 1e6 iterations.")
         for s in range(value_dim):
             self.value_table[s] = np.sum(transition_probs[s]*(self.reward[s] +
-                   self.discount_factor*np.array([value,]*self.num_actions)),
-                   axis=1)
+                                         self.discount_factor*np.array([value, ]*self.num_actions)),
+                                         axis=1)
 
     def _argmax_breaking_ties_randomly(self, x):
         """Taken from Ken."""

@@ -32,10 +32,10 @@ class Trial(object):
         self.agent.reset()
 
         while iteration < self.MIN_ITERATIONS or episode < self.MIN_EPISODES:
-            print "Episode:",episode
+            print("Episode:{}".format(episode))
             # Initialize the episode.
             self.task.reset()
-            #if self.task.pomdp:
+            # if self.task.pomdp:
             #    self.agent.reset_belief()
             state = self.task.observe()
             reward = None
@@ -70,5 +70,5 @@ class Trial(object):
     def run_multiple(self, num_trials):
         self.array_rewards_by_episode = np.zeros((num_trials, self.MIN_EPISODES))
         self.array_rewards_by_iteration = np.zeros((num_trials, self.MIN_ITERATIONS))
-        for i in xrange(num_trials):
+        for i in range(num_trials):
             self.array_rewards_by_iteration[i], self.array_rewards_by_episode[i] = self.run()

@@ -1,14 +1,16 @@
 #!/usr/bin/python2
 import IPython
 from threading import Thread
-from grid import SuperMarket
-import display
+from visual.grid import SuperMarket
+from visual import display
 import sys
 import pygame
 from pygame.locals import *
-import agent
+from visual.agent import Agent
 
 held = None
+
+
 def event_handler(e):
     global held
     if e.type == pygame.KEYDOWN and held is None:
@@ -25,7 +27,7 @@ def event_handler(e):
             g.set_robot(a4)
             held = 'w'
         if held is not None:
-            print g.observe()
+            print(g.observe())
     elif e.type == pygame.KEYUP and held:
         if e.key == pygame.K_a and held == 'a':
             held = None
@@ -36,14 +38,20 @@ def event_handler(e):
         elif e.key == pygame.K_w and held == 'w':
             held = None
 
+
 g = SuperMarket()
-a = agent.Agent(g)
+a = Agent(g)
+
+
 class Count:
     pass
+
+
 def process(every_frames):
     counter = Count()
     counter.n = 0
     counter.success = False
+
     def autonomous_action():
         if counter.n == 0 and len(g.targets) > 0:
             counter.success = False
@@ -53,15 +61,19 @@ def process(every_frames):
         elif len(g.targets) == 0:
             if not counter.success:
                 counter.success = True
-                print "SUCCESS!!!!!!"
+                print("SUCCESS!!!!!!")
         counter.n = (counter.n+1)%every_frames
     return autonomous_action
 
+
 display.event_handler = event_handler
+
+
 def go():
     display.process = process(10)
 
-a1,a2,a3,a4 = g.actions
+
+a1, a2, a3, a4 = g.actions
 display.drawables1.append(g.draw)
 display.drawables2.append(g.draw_belief)
 t = Thread(target=display.main, args=[sys.argv])

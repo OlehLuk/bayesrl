@@ -1,7 +1,6 @@
 import numpy as np
 from ..utils import check_random_state
 
-
 # Maze state is represented as a 2-element NumPy array: (Y, X). Increasing Y is South.
 
 # Possible actions, expressed as (delta-y, delta-x).
@@ -12,6 +11,7 @@ maze_actions = {
     'W': np.array([0, -1]),
 }
 
+
 def parse_topology(topology):
     return np.array([list(row) for row in topology])
 
@@ -20,15 +20,16 @@ class Maze(object):
     """
     Simple wrapper around a NumPy 2D array to handle flattened indexing and staying in bounds.
     """
+
     def __init__(self, topology, true_obs_prob=.8, easy_obs_model=True):
         self.topology = parse_topology(topology)
         self.flat_topology = self.topology.ravel()
         self.shape = self.topology.shape
-	self.true_obs_prob = true_obs_prob
-	self.easy_obs_model = easy_obs_model
-	#If the observation model is easy, the agent can observe which directions have walls
-	#If the observation model is not easy, the agent only observes how many of its four neighbors are walls. 
-	self.num_observations = 16 if easy_obs_model else 5
+        self.true_obs_prob = true_obs_prob
+        self.easy_obs_model = easy_obs_model
+        # If the observation model is easy, the agent can observe which directions have walls
+        # If the observation model is not easy, the agent only observes how many of its four neighbors are walls.
+        self.num_observations = 16 if easy_obs_model else 5
 
     def in_bounds_flat(self, position):
         return 0 <= position < np.product(self.shape)
@@ -59,44 +60,44 @@ class Maze(object):
         return list(np.nonzero(self.flat_topology != x)[0])
 
     def get_inbound_index(self, index_tuple):
-	x = min(max(index_tuple[0],0),self.shape[0]-1)
-	y = min(max(index_tuple[1],0),self.shape[1]-1)
-	return x, y
+        x = min(max(index_tuple[0], 0), self.shape[0] - 1)
+        y = min(max(index_tuple[1], 0), self.shape[1] - 1)
+        return x, y
 
     def true_observation(self, index_tuple):
-	it = index_tuple
-	if type(it) == np.int64:
-	    it = self.unflatten_index(it)
-	neighbors = [(it[0]+1,it[1]),
-		     (it[0]-1,it[1]),
-		     (it[0],it[1]+1),
-		     (it[0],it[1]-1)]
-	neighbors = [n for n in neighbors if self.in_bounds_unflat(n)]
-	if_wall = [self.get_unflat(n)=='#' for n in neighbors]
-	if self.easy_obs_model:
-	    obs = sum(if_wall)
-	else:
-	    obs = sum(np.array([8,4,2,1])*if_wall)    
-	return obs
+        it = index_tuple
+        if type(it) == np.int64:
+            it = self.unflatten_index(it)
+        neighbors = [(it[0] + 1, it[1]),
+                     (it[0] - 1, it[1]),
+                     (it[0], it[1] + 1),
+                     (it[0], it[1] - 1)]
+        neighbors = [n for n in neighbors if self.in_bounds_unflat(n)]
+        if_wall = [self.get_unflat(n) == '#' for n in neighbors]
+        if self.easy_obs_model:
+            obs = sum(if_wall)
+        else:
+            obs = sum(np.array([8, 4, 2, 1]) * if_wall)
+        return obs
 
     def obs_distribution(self, index_tuple):
-	if type(index_tuple) == int:
-	    index_tuple = self.unflatten_index(index_tuple)
-	other_obs_prob = (1-self.true_obs_prob)/(self.num_observations-1)
-	obs_distribution = [other_obs_prob] * self.num_observations
-	true_obs = self.true_observation(index_tuple)
-	obs_distribution[true_obs] = self.true_obs_prob
-	return obs_distribution
+        if type(index_tuple) == int:
+            index_tuple = self.unflatten_index(index_tuple)
+        other_obs_prob = (1 - self.true_obs_prob) / (self.num_observations - 1)
+        obs_distribution = [other_obs_prob] * self.num_observations
+        true_obs = self.true_observation(index_tuple)
+        obs_distribution[true_obs] = self.true_obs_prob
+        return obs_distribution
 
     def get_all_obs_distribution(self):
-	return [self.obs_distribution((x,y)) for x in range(self.shape[0]) for y in range(self.shape[1])]
+        return [self.obs_distribution((x, y)) for x in range(self.shape[0]) for y in range(self.shape[1])]
 
     def observation(self, index_tuple):
-	if type(index_tuple) == int:
-	    index_tuple = self.unflatten_index(index_tuple)
-	obs_distribution = self.obs_distribution(index_tuple)
-	obs = np.random.multinomial(1, obs_distribution)
-	return obs.tolist().index(1)
+        if type(index_tuple) == int:
+            index_tuple = self.unflatten_index(index_tuple)
+        obs_distribution = self.obs_distribution(index_tuple)
+        obs = np.random.multinomial(1, obs_distribution)
+        return obs.tolist().index(1)
 
     def __str__(self):
         return '\n'.join(''.join(row) for row in self.topology.tolist())
@@ -119,7 +120,6 @@ def move_avoiding_walls(maze, position, action):
         return position, 'hit-wall'
 
     return new_position, 'moved'
-
 
 
 class GridWorld(object):
@@ -162,7 +162,7 @@ class GridWorld(object):
     """
 
     def __init__(self, maze, rewards={'*': 10}, terminal_markers='*',
-    action_error_prob=0, random_state=None, directions="NSEW", pomdp=False):
+                 action_error_prob=0, random_state=None, directions="NSEW", pomdp=False):
 
         self.maze = Maze(maze) if not isinstance(maze, Maze) else maze
         self.rewards = rewards
@@ -175,10 +175,12 @@ class GridWorld(object):
         self.state = None
         self.reset()
         self.num_states = self.maze.shape[0] * self.maze.shape[1]
-	self.pomdp = pomdp
+        self.pomdp = pomdp
 
     def __repr__(self):
-        return 'GridWorld(maze={maze!r}, rewards={rewards}, terminal_markers={terminal_markers}, action_error_prob={action_error_prob})'.format(**self.__dict__)
+        return 'GridWorld(maze={maze!r}, rewards={rewards}, terminal_markers={terminal_markers}, action_error_prob={' \
+               'action_error_prob})'.format(
+            **self.__dict__)
 
     def reset(self):
         """
@@ -197,7 +199,7 @@ class GridWorld(object):
 
         The state is the index into the flattened maze.
         """
-	o = self.maze.observation(self.state) if self.pomdp else self.state
+        o = self.maze.observation(self.state) if self.pomdp else self.state
         return o
 
     def perform_action(self, action_idx):
@@ -232,7 +234,8 @@ class GridWorld(object):
                 transition_probabilities[state, :, state] = 1.
             else:
                 for action in range(self.num_actions):
-                    new_state_tuple, result = move_avoiding_walls(self.maze, self.maze.unflatten_index(state), self.actions[action])
+                    new_state_tuple, result = move_avoiding_walls(self.maze, self.maze.unflatten_index(state),
+                                                                  self.actions[action])
                     new_state = self.maze.flatten_index(new_state_tuple)
                     transition_probabilities[state, action, new_state] = 1.
                     action_rewards[state, action] = self.rewards.get(result, 0)
@@ -253,7 +256,7 @@ class GridWorld(object):
         transition_probabilities, rewards = self.as_mdp()
         return rewards.max()
 
-    ### Old API, where terminal states were None.
+    # Old API, where terminal states were None.
 
     def observe_old(self):
         return None if self.is_terminal(self.state) else self.state
@@ -264,7 +267,6 @@ class GridWorld(object):
             return None, reward
         else:
             return new_state, reward
-
 
     samples = {
         'trivial': [
@@ -287,8 +289,6 @@ class GridWorld(object):
     }
 
 
-
-
 def construct_cliff_task(width, height, goal_reward=50, move_reward=-1, cliff_reward=-100, **kw):
     """
     Construct a 'cliff' task, a GridWorld with a "cliff" between the start and
@@ -300,7 +300,7 @@ def construct_cliff_task(width, height, goal_reward=50, move_reward=-1, cliff_re
     """
 
     maze = ['.' * width] * (height - 1)  # middle empty region
-    maze.append('o' + 'X' * (width - 2) + '*') # bottom goal row
+    maze.append('o' + 'X' * (width - 2) + '*')  # bottom goal row
 
     rewards = {
         '*': goal_reward,

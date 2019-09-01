@@ -43,7 +43,7 @@ trial_thompson1.run_multiple(num_trials)
 ################################################################################
 # Plots!
 ################################################################################
-plot = Plot({"Thompson sampling": [trial_thompson1]#, trial_thompson2, trial_thompson3]
+plot = Plot({"Thompson sampling": [trial_thompson1]  # trial_thompson2, trial_thompson3]
             })
 # Plot cumulative rewards by iteration
 plot.cum_rewards_by_iteration()

@@ -2,7 +2,7 @@
 import sys
 import pygame
 from pygame.locals import *
-from colors import *
+from visual.colors import *
 
 FPS = 10
 

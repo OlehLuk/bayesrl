@@ -25,4 +25,4 @@ class Agent(object):
 
     # Make sure inherited classes have interact() function.
     def interact(self, reward, next_state, next_state_is_terminal):
-        raise NameError("interact() has not been implemented.")
+        raise NotImplementedError("interact() has to be implemented in any Agent class")

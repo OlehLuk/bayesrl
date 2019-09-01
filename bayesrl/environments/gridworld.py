@@ -12,6 +12,7 @@ maze_actions = {
     'W': np.array([0, -1]),
 }
 
+
 def parse_topology(topology):
     return np.array([list(row) for row in topology])
 
@@ -76,7 +77,6 @@ def move_avoiding_walls(maze, position, action):
     return new_position, 'moved'
 
 
-
 class GridWorld(object):
     """
     A simple task in a maze: get to the goal.
@@ -116,7 +116,13 @@ class GridWorld(object):
      'o': origin
     """
 
-    def __init__(self, maze, rewards={'*': 10}, terminal_markers='*', action_error_prob=0, random_state=None, directions="NSEW"):
+    def __init__(self,
+                 maze,
+                 rewards={'*': 10},
+                 terminal_markers='*',
+                 action_error_prob=0,
+                 random_state=None,
+                 directions="NSEW"):
 
         self.maze = Maze(maze) if not isinstance(maze, Maze) else maze
         self.rewards = rewards
@@ -131,7 +137,8 @@ class GridWorld(object):
         self.num_states = self.maze.shape[0] * self.maze.shape[1]
 
     def __repr__(self):
-        return 'GridWorld(maze={maze!r}, rewards={rewards}, terminal_markers={terminal_markers}, action_error_prob={action_error_prob})'.format(**self.__dict__)
+        return 'GridWorld(maze={maze!r}, rewards={rewards}, terminal_markers={terminal_markers}, action_error_prob={' \
+               'action_error_prob})'.format(**self.__dict__)
 
     def reset(self):
         """
@@ -205,8 +212,7 @@ class GridWorld(object):
         transition_probabilities, rewards = self.as_mdp()
         return rewards.max()
 
-    ### Old API, where terminal states were None.
-
+    # Old API, where terminal states were None.
     def observe_old(self):
         return None if self.is_terminal(self.state) else self.state
 
@@ -216,7 +222,6 @@ class GridWorld(object):
             return None, reward
         else:
             return new_state, reward
-
 
     samples = {
         'trivial': [

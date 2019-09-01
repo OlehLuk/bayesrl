@@ -3,7 +3,7 @@ from threading import Lock
 from math import *
 import pygame
 from pygame.locals import *
-from colors import *
+from visual.colors import *
 import random
 import IPython
 
@@ -21,7 +21,7 @@ class Grid(object):
     def action_errors(self,action):
         return [action]
 
-    def blocked(self, (r,c)):
+    def blocked(self, r, c):
         return not (0 <= r < self.height and 0 <= c < self.width) or (r,c) in self.aisles
 
     def set_robot(self,action):
@@ -126,7 +126,7 @@ class SuperMarket(Grid):
         self.actions = [(0,-1),(1,0),(0,1),(-1,0)]
         self.p_error = 0.05
 
-        self.targets = set(['oreo','iscream','milk'])
+        self.targets = {'oreo', 'iscream', 'milk'}
 
         for c in self.aisles_content:
             random.shuffle(self.aisles_content[c])
@@ -192,7 +192,7 @@ class SuperMarket(Grid):
             'lasagna' : pygame.image.load("images/lasagna.jpg")
         }
 
-    def cell_to_aisle(self,(r,c)):
+    def cell_to_aisle(self, r, c):
         for i in range(len(self.aisles_list)):
             if (r,c) in self.aisles_list[i]:
                 return (i+1,self.aisles_list[i].index((r,c)))

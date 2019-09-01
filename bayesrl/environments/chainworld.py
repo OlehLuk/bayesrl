@@ -1,8 +1,16 @@
-import numpy as np
 from ..utils import check_random_state
 
+
 class ChainWorld(object):
-    def __init__(self, left_length, left_reward, right_length, right_reward, on_chain_reward, p_return_to_start, random_state=None):
+    def __init__(self,
+                 left_length,
+                 left_reward,
+                 right_length,
+                 right_reward,
+                 on_chain_reward,
+                 p_return_to_start,
+                 random_state=None):
+
         self.left_length = left_length
         self.left_reward = left_reward
         self.right_length = right_length

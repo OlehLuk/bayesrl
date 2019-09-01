@@ -14,7 +14,7 @@ class ThompsonSampAgent(ModelBasedAgent):
         super(ThompsonSampAgent, self).reset()
         self.reward.fill(self.reward_param)
 
-    def interact(self, reward, next_state, next_state_is_terminal, idx):
+    def interact(self, reward, next_state, next_state_is_terminal):
         # Handle start of episode.
         if reward is None:
             # Return random action since there is no information.
@@ -54,6 +54,6 @@ class ThompsonSampAgent(ModelBasedAgent):
         transition_probs = np.zeros((self.num_states, self.num_actions, self.num_states))
         for s in range(self.num_states):
             for a in range(self.num_actions):
-                transition_probs[s,a] = np.random.dirichlet(self.transition_observations[s,a] +\
-                                                            self.dirichlet_param, size=1)
+                transition_probs[s, a] = np.random.dirichlet(self.transition_observations[s, a] +
+                                                             self.dirichlet_param, size=1)
         self._value_iteration(transition_probs)
