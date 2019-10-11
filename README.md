@@ -22,6 +22,8 @@ pip install -e "git+https://github.com/OlehLuk/bayesrl.git#egg=bayesrl"
 ## Refactoring by
 * Oleh Lukianykhin \<lukianykhin@ucu.edu.ua\>
 
+Refactoring was done to enable proper imports in library files. First of all, \__init__ files were updated with proper imports.
+
 ## References
 * Malcolm Strens. A bayesian framework for reinforcement learning. In _Proceedings of the 17th International Conference on Machine Learning (ICML)_, 2000.
 
